@@ -16,8 +16,13 @@ pint.json export-ignore
 
 # Project-specific setup files
 init/ export-ignore
+deploy/ export-ignore
 deploy.php export-ignore
 web/wp-config.php export-ignore
+
+# Composer files
+composer.lock export-ignore
+wp-translation-downloader.lock export-ignore
 
 # Docs and license
 LICENSE.md export-ignore

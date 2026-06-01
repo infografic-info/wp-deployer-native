@@ -3,14 +3,15 @@ set -euo pipefail
 
 VENDOR_DIR="/var/www/html/vendor"
 COMPOSER_FILE="/var/www/html/composer.json"
+LOCK_FILE="/var/www/html/composer.lock"
 
 if [ ! -f "$COMPOSER_FILE" ]; then
   echo "composer.json not found. Skipping composer install."
   exit 0
 fi
 
-if [ -d "$VENDOR_DIR" ]; then
-  echo "Vendor directory already exists. Skipping composer install."
+if [ -f "$LOCK_FILE" ] && [ -d "$VENDOR_DIR" ]; then
+  echo "Vendor directory and composer.lock already exist. Skipping composer install."
   exit 0
 fi
 

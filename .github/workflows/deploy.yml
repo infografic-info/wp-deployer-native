@@ -1,9 +1,9 @@
 name: Deploy to Production
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -14,13 +14,15 @@ jobs:
     env:
       PROD_IP: ${{ secrets.PROD_IP }}
       PROD_PORT: ${{ secrets.PROD_PORT }}
-      PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
+      PROD_DOMAIN: ${{ vars.PROD_DOMAIN }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install project dependencies
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
         run: |
           composer install --prefer-dist --no-dev --no-scripts --ignore-platform-reqs
 
@@ -39,7 +41,7 @@ jobs:
     runs-on: [self-hosted, deployer, production]
     
     env:
-      DOMAIN: ${{ secrets.PROD_DOMAIN }}
+      DOMAIN: ${{ vars.PROD_DOMAIN }}
 
     needs: deploy
     if: always()

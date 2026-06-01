@@ -2,15 +2,18 @@
 web/wp-content/plugins/*
 !web/wp-content/plugins/.gitkeep
 web/wp-content/mu-plugins/*/
-web/wp-content/themes/twentytwentyfive/
+web/wp-content/themes/*/
+!web/wp-content/themes/index.php
+!web/wp-content/themes/.gitkeep
 web/wp-content/upgrade
 web/wp-content/uploads/*
 !web/wp-content/uploads/.gitkeep
+web/wp-content/webp-express/*
+!web/wp-content/webp-express/.gitkeep
 web/wp-content/cache/*
+web/wp-content/languages/
 
 # Whitelisted Plugins
-#!web/wp-content/plugins/advanced-custom-fields-pro/
-#!web/wp-content/plugins/elementor-pro/
 
 # WordPress
 web/wp-admin/
@@ -26,6 +29,7 @@ web/index.php
 
 # Initial data
 init/data/*.tar*
+init/data/*.sql*
 
 # Logs
 *.log
