@@ -32,7 +32,7 @@ task('db:import', function () {
 
 task('db:replace-urls', function () {
     $domain    = get('domain');
-    $localUrl  = trim(runLocally('ddev exec printenv DDEV_PRIMARY_URL'));
+    $localUrl  = trim(getenv('DDEV_PRIMARY_URL') ?: runLocally('printenv DDEV_PRIMARY_URL'));
     $remoteUrl = 'https://' . $domain;
 
     if (empty($localUrl)) {
@@ -48,7 +48,7 @@ task('db:replace-urls', function () {
     writeln($output);
 
     writeln('🔍 Verificando Elementor...');
-    $output = ee_shell($domain, 'wp plugin is-active elementor && echo ELEMENTOR_ACTIVE');
+    $output = ee_shell($domain, 'wp plugin is-active elementor && echo ELEMENTOR_ACTIVE || true');
 
     if (str_contains($output, 'ELEMENTOR_ACTIVE')) {
         writeln('⚙️  Elementor detectado, atualizando URLs...');

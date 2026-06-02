@@ -169,7 +169,7 @@ task('ee:setup-shared-wp-config', function () {
 
 task('init:generate-data', function () {
     writeln("🔄 Gerando dados de inicialização via ddev generate-init-data...");
-    runLocally('ddev generate-init-data');
+    runLocally('.ddev/commands/host/generate-init-data');
     writeln("✅ Dados gerados em init/data/");
 })->desc('Gera db.sql.gz e uploads.tar.gz localmente via DDEV');
 
@@ -180,11 +180,11 @@ task('ee:provision', function () {
     invoke('ee:configure-deploy-target');
     invoke('ee:prepare-htdocs');
     invoke('composer:auth:upload');
+    invoke('ee:setup-shared-wp-config');
 
     writeln("🚀 Executando primeiro deploy em {$stage}...");
-    runLocally("ddev exec dep deploy {$stage}");
+    runLocally("dep deploy {$stage}");
 
-    invoke('ee:setup-shared-wp-config');
     invoke('init:generate-data');
     invoke('init:data:import');
 })->desc('Provisiona site EasyEngine: criação, primeiro deploy, shared wp-config e importação de dados');

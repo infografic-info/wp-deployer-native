@@ -145,7 +145,7 @@ task('services:restart', function () {
 task('services:clean', function () {
     $domain = get('domain');
     writeln('🔄 Clearing Redis cache via ee site clean para o domínio: ' . $domain);
-    $output = run_on_management_host('sudo ee site clean ' . $domain);
+    $output = run_on_management_host_pty('sudo ee site clean ' . $domain);
     writeln($output);
 });
 

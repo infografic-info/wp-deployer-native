@@ -68,3 +68,17 @@ function run_on_management_host(string $cmd): string {
         $mgmtPort, $mgmtUser, $mgmtHost, escapeshellarg($cmd)
     ));
 }
+
+// Commands that call `docker exec` internally (e.g. ee site clean) require a PTY
+// to propagate the operation inside the container. `script -q -c` allocates one
+// at the shell layer without needing ssh -t, which would interfere with output capture.
+function run_on_management_host_pty(string $cmd): string {
+    $mgmtHost = get('mgmt_host');
+    $mgmtPort = get('mgmt_port', 22);
+    $mgmtUser = get('mgmt_user', 'infoadm');
+    $ptyCmd = 'bash -l -c ' . escapeshellarg('script -q -c ' . escapeshellarg($cmd) . ' /dev/null');
+    return runLocally(sprintf(
+        'ssh -o StrictHostKeyChecking=no -p %d %s@%s %s',
+        $mgmtPort, $mgmtUser, $mgmtHost, escapeshellarg($ptyCmd)
+    ));
+}
