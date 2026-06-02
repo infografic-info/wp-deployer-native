@@ -1,3 +1,14 @@
+## v0.3.0 (2026-06-02)
+
+### Feat
+
+- Adicionar wp:config:lock ao final da cadeia de deploy
+- Adicionar tasks de provisionamento EasyEngine e corrigir escaping SSH
+
+### Fix
+
+- Alocar PTY para ee site clean e corrigir comandos DDEV
+
 ## v0.2.0 (2026-06-02)
 
 ### Feat
