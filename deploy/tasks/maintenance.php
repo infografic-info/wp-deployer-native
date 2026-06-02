@@ -19,11 +19,11 @@ task('db:import', function () {
     upload($localSql, $remoteSql);
 
     writeln('⚠️  Resetando banco de dados...');
-    $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp db reset --yes\"');
+    $output = ee_shell($domain, 'wp db reset --yes');
     writeln($output);
 
     writeln('⚙️  Importando banco de dados via WP-CLI...');
-    $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp db import /var/www/init/data/db.sql\"');
+    $output = ee_shell($domain, 'wp db import /var/www/init/data/db.sql');
     writeln($output);
 
     run("rm -f {$remoteSql}");
@@ -40,21 +40,21 @@ task('db:replace-urls', function () {
     }
 
     writeln("🔄 Substituindo URLs: {$localUrl} → {$remoteUrl}");
-    $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp search-replace ' . $localUrl . ' ' . $remoteUrl . ' --all-tables\"');
+    $output = ee_shell($domain, "wp search-replace {$localUrl} {$remoteUrl} --all-tables");
     writeln($output);
 
     writeln('🧹 Limpando cache...');
-    $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp cache flush\"');
+    $output = ee_shell($domain, 'wp cache flush');
     writeln($output);
 
     writeln('🔍 Verificando Elementor...');
-    $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp plugin is-active elementor && echo ELEMENTOR_ACTIVE\"');
+    $output = ee_shell($domain, 'wp plugin is-active elementor && echo ELEMENTOR_ACTIVE');
 
     if (str_contains($output, 'ELEMENTOR_ACTIVE')) {
         writeln('⚙️  Elementor detectado, atualizando URLs...');
-        $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp elementor replace_urls ' . $localUrl . ' ' . $remoteUrl . '\"');
+        $output = ee_shell($domain, "wp elementor replace_urls {$localUrl} {$remoteUrl}");
         writeln($output);
-        $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp elementor flush_css\"');
+        $output = ee_shell($domain, 'wp elementor flush_css');
         writeln($output);
     } else {
         writeln('ℹ️  Elementor não está ativo, pulando.');
@@ -145,10 +145,8 @@ task('wp:config:lock', function () {
     ];
 
     foreach ($constants as $name => $value) {
-        $cmd = 'sudo ee shell ' . $domain
-             . ' --command=\"wp config set ' . $name . ' ' . $value . ' --raw --type=constant\"';
         writeln("🔒 Definindo {$name}...");
-        writeln(run_on_management_host($cmd));
+        writeln(ee_shell($domain, "wp config set {$name} {$value} --raw --type=constant"));
     }
 
     writeln('✅ wp-config.php bloqueado para produção.');
@@ -165,10 +163,8 @@ task('wp:config:unlock', function () {
     ];
 
     foreach ($constants as $name) {
-        $cmd = 'sudo ee shell ' . $domain
-             . ' --command=\"wp config delete ' . $name . ' --type=constant 2>/dev/null || true\"';
         writeln("🔓 Removendo {$name}...");
-        writeln(run_on_management_host($cmd));
+        writeln(ee_shell($domain, "wp config delete {$name} --type=constant 2>/dev/null || true"));
     }
 
     writeln('✅ wp-config.php desbloqueado para manutenção.');

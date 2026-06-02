@@ -119,7 +119,7 @@ task('backup:db', function () {
 task('wordpress:update-db', function () {
     $domain = get('domain');
     writeln('Executando update-db via ee shell para o domínio: ' . $domain);
-    $output = run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp core update-db\"');
+    $output = ee_shell($domain, 'wp core update-db');
     writeln($output);
 });
 
@@ -127,7 +127,7 @@ task('wordpress:cache', function () {
     $domain = get('domain');
 
     writeln('🧹 Limpando cache...');
-    writeln(run_on_management_host('sudo ee shell ' . $domain . ' --command=\"wp cache flush\"'));
+    writeln(ee_shell($domain, 'wp cache flush'));
 
     writeln('🔴 Ativando Redis (object-cache.php)...');
     run('ln -sf {{current_path}}/web/wp-content/plugins/wp-redis/object-cache.php '

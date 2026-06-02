@@ -32,6 +32,19 @@ function get_prod_stack(): string {
     return $stack;
 }
 
+function assert_within_domain(string ...$paths): void {
+    $allowed = rtrim(dirname(get('deploy_path')), '/'); // /var/www/{domain}
+    foreach ($paths as $path) {
+        if (!str_starts_with(rtrim($path, '/'), $allowed)) {
+            throw new \Exception(
+                "Segurança: operação fora do escopo do domínio.\n"
+                . "  Permitido: {$allowed}\n"
+                . "  Tentativa: {$path}"
+            );
+        }
+    }
+}
+
 function assert_easyengine(): void {
     if (get_prod_stack() !== 'easyengine') {
         throw new \Exception('Esta operação requer PROD_STACK=easyengine.');
@@ -42,12 +55,16 @@ function assert_easyengine(): void {
     }
 }
 
+function ee_shell(string $domain, string $command): string {
+    return run_on_management_host('sudo ee shell ' . escapeshellarg($domain) . ' --command=' . escapeshellarg($command));
+}
+
 function run_on_management_host(string $cmd): string {
     $mgmtHost = get('mgmt_host');
     $mgmtPort = get('mgmt_port', 22);
     $mgmtUser = get('mgmt_user', 'infoadm');
     return runLocally(sprintf(
-        'ssh -o StrictHostKeyChecking=no -p %d %s@%s "%s"',
-        $mgmtPort, $mgmtUser, $mgmtHost, $cmd
+        'ssh -o StrictHostKeyChecking=no -p %d %s@%s %s',
+        $mgmtPort, $mgmtUser, $mgmtHost, escapeshellarg($cmd)
     ));
 }

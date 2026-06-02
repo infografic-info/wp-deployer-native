@@ -18,9 +18,20 @@ if (file_exists(DEPLOY_ROOT . '/vendor/autoload.php')) {
     }
 }
 
+$_deployStage = null;
+foreach (['production', 'staging'] as $_s) {
+    if (getenv('DEPLOY_ENV') === $_s || in_array($_s, $_SERVER['argv'] ?? [], true)) {
+        $_deployStage = $_s;
+        break;
+    }
+}
+
+if ($_deployStage && file_exists(DEPLOY_ROOT . "/.env.{$_deployStage}")) {
+    \Dotenv\Dotenv::createImmutable(DEPLOY_ROOT, ".env.{$_deployStage}")->load();
+}
+
 if (file_exists(DEPLOY_ROOT . '/.env')) {
-    $dotenv = \Dotenv\Dotenv::createImmutable(DEPLOY_ROOT);
-    $dotenv->load();
+    \Dotenv\Dotenv::createImmutable(DEPLOY_ROOT)->load();
 }
 
 \Env\Env::$options = 31;
