@@ -45,7 +45,7 @@ set('shared_files', ['wp-config.php', 'nginx.conf', 'auth.json', 'robots.txt']);
 set('shared_dirs', ['web/wp-content/uploads', 'web/wp-content/webp-express']);
 set('writable_dirs', ['web/wp-content/uploads', 'web/wp-content/webp-express']);
 set('writable_mode', 'chmod');
-set('scripts_base_url', 'https://raw.githubusercontent.com/rodrigo-gpereira/wp-server-scripts/main');
+set('scripts_base_url', 'https://raw.githubusercontent.com/infografic-info/wp-server-scripts/main');
 
 host('production')
     ->setHostname($prod_ip)

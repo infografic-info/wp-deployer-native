@@ -19,18 +19,23 @@ task('composer:auth:upload', function () {
 task('setup:scripts', function () {
     $baseDir          = dirname(get('deploy_path'));
     $remoteScriptsDir = "{$baseDir}/scripts";
-    $baseUrl          = get('scripts_base_url');
+    $stack            = get_prod_stack();
+    $type             = get_project_type();
+    $scriptsUrl       = get('scripts_base_url') . "/{$stack}/{$type}";
     $scripts          = ['backup-db.sh', 'backup-files.sh', 'restore.sh'];
 
-    run("mkdir -p {$remoteScriptsDir}");
+    run("mkdir -p {$remoteScriptsDir}/lib");
+
+    writeln("📥 Baixando lib/common.sh...");
+    run("curl -fsSL {$scriptsUrl}/lib/common.sh -o {$remoteScriptsDir}/lib/common.sh");
 
     foreach ($scripts as $script) {
         writeln("📥 Baixando {$script}...");
-        run("curl -fsSL {$baseUrl}/{$script} -o {$remoteScriptsDir}/{$script}");
+        run("curl -fsSL {$scriptsUrl}/{$script} -o {$remoteScriptsDir}/{$script}");
     }
 
     run("chmod +x {$remoteScriptsDir}/*.sh");
-    writeln('✅ Scripts instalados em ' . $remoteScriptsDir);
+    writeln("✅ Scripts instalados em {$remoteScriptsDir} ({$stack}/{$type})");
 })->desc('Instala scripts de manutenção a partir do repositório remoto');
 
 task('duplicati:register-backup-task', function () {
