@@ -1,0 +1,78 @@
+{
+    "name": "infografic/wp-deployer",
+    "type": "project",
+    "license": "MIT",
+    "description": "WordPress project boilerplate with Composer",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Rodrigo Gomes",
+            "email": "rodrigo@infografic.com.br"
+        }
+    ],
+    "repositories": [
+        {
+            "name": "wp-packages",
+            "type": "composer",
+            "url": "https://repo.wp-packages.org"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "roots/wordpress-no-content": "^7.0",
+        "roots/wordpress-core-installer": "^v4.0",
+        "inpsyde/wp-translation-downloader": "^2.5",
+        "vlucas/phpdotenv": "^5.5",
+        "wp-theme/twentytwentyfive": "^1.0",
+        "oscarotero/env": "^2.1",
+        "wp-plugin/nginx-helper": "^2.3",
+        "wp-plugin/wp-redis": "^1.4",
+        "wikimedia/composer-merge-plugin": "^2.1"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "roots/wordpress-core-installer": true,
+            "inpsyde/wp-translation-downloader": true,
+            "composer/installers": true,
+            "wikimedia/composer-merge-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-install-cmd": "php scripts/install-wp-core.php",
+        "post-update-cmd": "php scripts/install-wp-core.php",
+        "deploy:templates:sync": "php scripts/deploy/sync-templates.php",
+        "deploy:templates:sync:force": "php scripts/deploy/sync-templates.php --force"
+    },
+    "extra": {
+        "wordpress-install-dir": "wp",
+        "installer-paths": {
+            "web/wp-content/plugins/{$name}/": [
+                "type:wordpress-plugin"
+            ],
+            "web/wp-content/themes/{$name}/": [
+                "type:wordpress-theme"
+            ],
+            "web/wp-content/mu-plugins/{$name}/": [
+                "type:wordpress-muplugin"
+            ]
+        },
+        "wp-translation-downloader": {
+            "languages": [
+                "pt_BR"
+            ],
+            "languageRootDir": "web/wp-content/languages"
+        },
+        "merge-plugin": {
+            "include": [
+                "composer.local.json"
+            ]
+        }
+    },
+    "require-dev": {
+        "deployer/deployer": "^8.0"
+    }
+}

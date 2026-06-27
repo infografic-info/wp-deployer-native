@@ -1,0 +1,62 @@
+# ----------------------------------------------------------------------------
+# WordPress Core
+# ----------------------------------------------------------------------------
+web/*
+!web/wp-content/
+
+# ----------------------------------------------------------------------------
+# WordPress Content
+# ----------------------------------------------------------------------------
+web/wp-content/plugins/*
+!web/wp-content/plugins/.gitkeep
+web/wp-content/mu-plugins/*/
+web/wp-content/themes/*/
+!web/wp-content/themes/index.php
+!web/wp-content/themes/.gitkeep
+web/wp-content/uploads/*
+!web/wp-content/uploads/.gitkeep
+web/wp-content/webp-express/*
+!web/wp-content/webp-express/.gitkeep
+web/wp-content/cache/*
+web/wp-content/languages/
+web/wp-content/upgrade
+
+# Whitelisted Plugins
+
+# ----------------------------------------------------------------------------
+# Composer
+# ----------------------------------------------------------------------------
+/vendor
+auth.json
+composer.lock
+composer.*.json
+wp-translation-downloader.lock
+
+# ----------------------------------------------------------------------------
+# Ambiente
+# ----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ----------------------------------------------------------------------------
+# Deploy
+# ----------------------------------------------------------------------------
+# Dados de seed gerados localmente pelo ddev generate-init-data
+init/data/*
+!init/data/.gitkeep
+# wp-config.php de referência baixado do EasyEngine durante provisionamento
+.ee-reference/
+# Comando privado gerador de credenciais do composer para o host via hashicorp vault
+.ddev/commands/host/set-composer-auth
+
+# ----------------------------------------------------------------------------
+# WP-CLI
+# ----------------------------------------------------------------------------
+wp-cli.local.yml
+
+# ----------------------------------------------------------------------------
+# Desenvolvimento local
+# ----------------------------------------------------------------------------
+*.log
+.ddev/docker-compose.composer-package.yaml
