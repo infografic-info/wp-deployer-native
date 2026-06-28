@@ -6,8 +6,16 @@
     "version": "1.0.0",
     "authors": [
         {
+            "name": "Infografic",
+            "email": "developer@infografic.com.br",
+            "homepage": "https://github.com/infografic-info",
+            "role": "Owner"
+        },
+        {
             "name": "Rodrigo Gomes",
-            "email": "rodrigo@infografic.com.br"
+            "email": "rodrigo@infografic.com.br",
+            "homepage": "https://github.com/rodrigo-gpereira",
+            "role": "Developer"
         }
     ],
     "repositories": [
@@ -37,16 +45,11 @@
             "inpsyde/wp-translation-downloader": true,
             "composer/installers": true,
             "wikimedia/composer-merge-plugin": true
-        }
+        },
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "scripts": {
-        "post-install-cmd": "php scripts/install-wp-core.php",
-        "post-update-cmd": "php scripts/install-wp-core.php",
-        "deploy:templates:sync": "php scripts/deploy/sync-templates.php",
-        "deploy:templates:sync:force": "php scripts/deploy/sync-templates.php --force"
-    },
     "extra": {
         "wordpress-install-dir": "wp",
         "installer-paths": {
@@ -73,6 +76,13 @@
         }
     },
     "require-dev": {
-        "deployer/deployer": "^8.0"
+        "infografic/wp-deployer-core": "^1.0",
+        "wikimedia/composer-merge-plugin": "^2.1"
+    },
+    "scripts": {
+        "post-install-cmd": "php scripts/install-wp-core.php",
+        "post-update-cmd": "php scripts/install-wp-core.php",
+        "deploy:templates:sync": "sync-templates",
+        "deploy:templates:sync:force": "sync-templates --force"
     }
 }

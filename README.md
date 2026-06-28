@@ -1,6 +1,17 @@
-# WP Deployer
+# WP Deployer (Native)
 
-Boilerplate para deploy e gerenciamento de instalações WordPress com DDEV (desenvolvimento) e EasyEngine (produção/staging).
+[![Versão](https://img.shields.io/badge/versão-1.0.0-blue.svg)](https://github.com/infografic-info/wp-deployer-native/releases)
+[![Licença](https://img.shields.io/badge/licença-MIT-green.svg)](LICENSE)
+[![PHP](https://img.shields.io/badge/php-%3E%3D8.3-777bb4.svg)](https://www.php.net/)
+
+Boilerplate WordPress tradicional (**Native**) para deploy e gerenciamento de instalações com DDEV
+(desenvolvimento) e EasyEngine (produção/staging). As tasks de deploy, provisionamento e manutenção
+são fornecidas pelo pacote
+[`infografic/wp-deployer-core`](https://github.com/infografic-info/wp-deployer-core).
+
+> Esta é a variante **Native** (WordPress tradicional). Existe também uma variante **Bedrock**
+> ([Roots Bedrock](https://roots.io/bedrock/)) que compartilha o mesmo core de deploy — o
+> comportamento é selecionado via `PROJECT_TYPE`.
 
 ## Funcionalidades
 
@@ -9,11 +20,11 @@ Boilerplate para deploy e gerenciamento de instalações WordPress com DDEV (des
 - Provisionamento de ambientes EasyEngine (criação de site, shared wp-config, primeiro deploy)
 - Instalação de scripts de manutenção remotos (backup, restore)
 - Suporte a múltiplos ambientes com `.env` por stage
-- Tasks de deploy fornecidas pelo pacote [`infografic/wp-deployer-core`]
+- Tasks de deploy fornecidas pelo pacote [`infografic/wp-deployer-core`](https://github.com/infografic-info/wp-deployer-core)
 
 ## Pré-requisitos
 
-- [PHP 8.1+](https://www.php.net/)
+- [PHP 8.3+](https://www.php.net/)
 - [Composer](https://getcomposer.org/)
 - [DDEV](https://ddev.com/)
 
@@ -48,8 +59,8 @@ PROD_STACK=easyengine
 # Pacote de deploy (infografic/wp-deployer-core)
 # ----------------------------------------------------------------------------
 DEPLOY_PACKAGE_NAME=infografic/wp-deployer-core
-DEPLOY_PACKAGE_VERSION=0.2.0
-DEPLOY_TEMPLATES_VERSION=0.2.0
+DEPLOY_PACKAGE_VERSION=1.0.0
+DEPLOY_TEMPLATES_VERSION=1.0.0
 
 # ----------------------------------------------------------------------------
 # WordPress bootstrap local (usado por .ddev/commands/web/install-wp-if-needed)
@@ -101,7 +112,6 @@ B2_APPLICATION_KEY_ID=""
 STAGING_IP=0.0.0.0
 STAGING_PORT=2232
 STAGING_DOMAIN=staging.example.com
-STAGING_MGMT_IP=0.0.0.0
 MGMT_USER=root
 
 # IP do mgmt host para staging em deploy local (CI usa 10.0.0.1 por padrão)
@@ -181,14 +191,6 @@ ddev exec dep rollback production                        # rollback simples
 RESTORE_ON_ROLLBACK=1 ddev exec dep rollback production  # rollback + restore de arquivos/banco
 ```
 
-### Pré-requisito antes do deploy
-
-O `composer install` é executado automaticamente pelo DDEV no `ddev start`. Para deploys manuais basta:
-
-```sh
-ddev exec dep deploy production
-```
-
 ### CI/CD — GitHub Actions
 
 > **Atenção:** os arquivos `.github/workflows/production.yml` e `.github/workflows/staging.yml` são exemplos de referência. Eles precisam ser adaptados à estrutura do seu projeto, ao tipo de runner utilizado (self-hosted ou hospedado pelo GitHub) e à forma como o seu servidor gerencia autenticação SSH e segredos.
@@ -264,6 +266,27 @@ ddev exec dep duplicati:backup:register production  # registra tarefa e cron di�
 ddev exec dep backup:run production                 # executa backup completo
 ```
 
+## Sincronização de templates
+
+Os artefatos reutilizáveis de CI/CD e comandos DDEV são fornecidos pelo pacote
+`infografic/wp-deployer-core`. Para sincronizá-los para este projeto (respeitando
+`PROJECT_TYPE=native`), use os scripts já declarados no `composer.json`:
+
+```sh
+composer deploy:templates:sync          # cria/atualiza apenas o que está ausente
+composer deploy:templates:sync:force    # sobrescreve arquivos divergentes
+```
+
+## Rastreabilidade de versão
+
+Para registrar exatamente qual versão de pacote/templates está ativa, o projeto define no `.env`:
+
+- `DEPLOY_PACKAGE_NAME`
+- `DEPLOY_PACKAGE_VERSION`
+- `DEPLOY_TEMPLATES_VERSION`
+
+Esses valores são exibidos pela task `deploy:version:report` no início de cada deploy.
+
 ## Estrutura do projeto
 
 ```
@@ -289,4 +312,4 @@ web/                          # instalação WordPress (core gitignored; wp-cont
 
 ## Licença
 
-Consulte o arquivo `LICENSE` para mais informações.
+[MIT](LICENSE) © Infografic
